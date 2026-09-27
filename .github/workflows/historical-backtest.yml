@@ -1,0 +1,63 @@
+name: Historical Backtest V1
+
+on:
+  workflow_dispatch:
+    inputs:
+      history_season:
+        description: "History season start year"
+        required: true
+        default: "2023"
+
+      test_season:
+        description: "Test season start year"
+        required: true
+        default: "2024"
+
+      leagues:
+        description: "Competition codes"
+        required: true
+        default: "PL,BL1,SA,PD,FL1"
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Historical Backtest V1
+        run: |
+          python src/historical_backtest.py \
+            --history-season "${{ inputs.history_season }}" \
+            --test-season "${{ inputs.test_season }}" \
+            --leagues "${{ inputs.leagues }}" \
+            --config config/v1.json \
+            --raw-dir data/raw \
+            --out-dir reports
+
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f reports/summary.json ]; then
+            cat reports/summary.json
+          fi
+
+      - name: Upload backtest reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-backtest-v1-${{ inputs.test_season }}
+          path: reports/
+          if-no-files-found: warn
