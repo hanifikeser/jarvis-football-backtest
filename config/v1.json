@@ -1,1 +1,11 @@
-
+{
+  "version": "JARVIS_BACKTEST_V1_FROZEN",
+  "legacy_a_threshold": 0.20,
+  "legacy_b_threshold": 0.20,
+  "poisson_ou_probability_threshold": 0.50,
+  "l5_l10_weight_l5": 0.50,
+  "l5_l10_weight_l10": 0.50,
+  "x_under_total_lambda_max": 3.15,
+  "x_under_lambda_gap_max": 0.45,
+  "score_matrix_max_goals": 10
+}
